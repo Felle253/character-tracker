@@ -1,6 +1,6 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 generator client {
@@ -42,12 +42,12 @@ model Character {
 }
 
 model Game {
-  id               String   @id @default(uuid())
-  result           Result
-  opponentName     String?
-  comment          String?
-  durationSecondsq Int?
-  createdAt        DateTime @default(now())
+  id              String   @id @default(uuid())
+  result          Result
+  opponentName    String?
+  comment         String?
+  durationSeconds Int?
+  createdAt       DateTime @default(now())
 
   character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
   characterId String

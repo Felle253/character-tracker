@@ -14,7 +14,7 @@ export const load = (async () => {
 		// beräkna statistik på servern och inkludera ownerId/ownerName
 		const list = charactersRaw.map((c) => {
 			const total = c.games.length;
-			const wins = c.games.filter((g) => g.won).length;
+			const wins = c.games.filter((g) => g.result === 'WIN').length;
 			const losses = total - wins;
 			const winRate = total === 0 ? 0 : Math.round((wins / total) * 1000) / 10; // 1 decimal
 			return {
