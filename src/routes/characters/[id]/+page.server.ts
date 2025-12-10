@@ -12,7 +12,7 @@ export const load: PageServerLoad = (async ({ params }) => {
 
     if (!character) throw error(404, 'Character not found');
 
-    // Hämta andra characters (för opponent-select)
+    // Hämta andra characters
     const otherCharacters = await prisma.character.findMany({
       where: { id: { not: id } },
       select: { id: true, name: true },

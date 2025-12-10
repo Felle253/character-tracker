@@ -1,47 +1,47 @@
 <!-- src/routes/characters/create/+page.svelte -->
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
-  let name = '';
-  let description = '';
-  let auth = null;
-  let sessionId = '';
-  let user = null;
+	let name = '';
+	let description = '';
+	let auth = null;
+	let sessionId = '';
+	let user = null;
 
-  onMount(() => {
-    const raw = localStorage.getItem('app_auth');
-    if (!raw) {
-      // not logged in -> back to login
-      goto('/login');
-      return;
-    }
-    auth = JSON.parse(raw);
-    sessionId = auth.sessionId;
-    user = auth.user;
-  });
+	onMount(() => {
+		const raw = localStorage.getItem('app_auth');
+		if (!raw) {
+			// not logged in -> back to login
+			goto('/login');
+			return;
+		}
+		auth = JSON.parse(raw);
+		sessionId = auth.sessionId;
+		user = auth.user;
+	});
 </script>
 
 <section class="form-container">
-  <h1>Skapa Character</h1>
+	<h1>Skapa Character</h1>
 
-  <form method="POST" class="form">
-    <input type="hidden" name="sessionId" value={sessionId} />
-    <div class="field">
-      <label>Namn</label>
-      <input name="name" bind:value={name} required />
-    </div>
+	<form method="POST" class="form">
+		<input type="hidden" name="sessionId" value={sessionId} />
+		<div class="field">
+			<label>Namn</label>
+			<input name="name" bind:value={name} required />
+		</div>
 
-    <div class="field">
-      <label>Beskrivning (valfritt)</label>
-      <textarea name="description" bind:value={description}></textarea>
-    </div>
+		<div class="field">
+			<label>Beskrivning (valfritt)</label>
+			<textarea name="description" bind:value={description}></textarea>
+		</div>
 
-    <div class="actions">
-      <button type="submit" class="btn primary">Skapa</button>
-      <a href="/characters" class="link">Avbryt</a>
-    </div>
-  </form>
+		<div class="actions">
+			<button type="submit" class="btn primary">Skapa</button>
+			<a href="/characters" class="link">Avbryt</a>
+		</div>
+	</form>
 </section>
 
 <style>

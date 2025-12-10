@@ -11,7 +11,6 @@ export const load = (async () => {
 			include: { games: { orderBy: { createdAt: 'desc' } }, owner: true }
 		});
 
-		// beräkna statistik på servern och inkludera ownerId/ownerName
 		const list = charactersRaw.map((c) => {
 			const total = c.games.length;
 			const wins = c.games.filter((g) => g.result === 'WIN').length;

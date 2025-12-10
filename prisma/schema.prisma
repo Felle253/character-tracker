@@ -17,6 +17,17 @@ model User {
   // relations
   characters Character[] // Characters owned by this user
   sessions   Session[] // Active sessions for the user
+
+  profileImage String? // data:url base64 e.g. "data:image/png;base64,...."
+  images       ProfileImage[]
+}
+
+model ProfileImage {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  imageUrl  String // data URL eller filväg
+  createdAt DateTime @default(now())
 }
 
 model Session {
@@ -34,7 +45,6 @@ model Character {
   description String?
   createdAt   DateTime @default(now())
 
-  // optional owner so you can migrate gradually / have anonymous characters
   owner   User?   @relation(fields: [ownerId], references: [id])
   ownerId String?
 

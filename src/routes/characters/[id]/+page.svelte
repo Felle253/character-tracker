@@ -47,7 +47,7 @@
 			<input type="hidden" name="characterId" value={data.character.id} />
 
 			<div class="field">
-				<label>Motståndare (välj en befintlig character eller lämna blank)</label>
+				<label>Motståndare</label>
 				<select name="opponentId">
 					<option value="">Ingen motståndare (spara endast för denna character)</option>
 					{#each data.otherCharacters as oc}
@@ -62,7 +62,7 @@
 			</div>
 
 			<div class="field">
-				<label>Speltid (sekunder, valfritt)</label>
+				<label>Speltid (valfritt)</label>
 				<input name="durationSeconds" type="number" min="0" placeholder="120" />
 			</div>
 
@@ -102,7 +102,6 @@
 </section>
 
 <style>
-	/* keep your clean theme */
 	.detail {
 		max-width: 64rem;
 		margin: 2rem auto;

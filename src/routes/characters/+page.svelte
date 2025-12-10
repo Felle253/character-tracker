@@ -11,6 +11,7 @@
 		sessionId?: string;
 	} | null = null;
 	let user = null;
+	let profileUser = null;
 
 	// filter state
 	let onlyMine = false;
@@ -26,12 +27,32 @@
 		}
 	}
 
+	async function fetchProfile() {
+		if (!user?.id) {
+			profileUser = null;
+			return;
+		}
+		try {
+			const res = await fetch(`/api/user/${user.id}`);
+			if (res.ok) {
+				const json = await res.json();
+				profileUser = json.user;
+			}
+		} catch (e) {
+			console.warn('Could not fetch profile', e);
+		}
+	}
+
 	onMount(() => {
 		readAuth();
+		fetchProfile();
 
 		// keep sync across tabs
 		const onStorage = (e: StorageEvent) => {
-			if (e.key === 'app_auth') readAuth();
+			if (e.key === 'app_auth') {
+				readAuth();
+				fetchProfile();
+			}
 		};
 		window.addEventListener('storage', onStorage);
 		return () => window.removeEventListener('storage', onStorage);
@@ -61,8 +82,6 @@
 		goto('/characters/create');
 	}
 
-	// derived lists
-	// data.characters comes from server and now contains ownerId & ownerName
 	$: characters = data.characters ?? [];
 
 	// When onlyMine is true and user is present -> filter by ownerId
@@ -80,7 +99,6 @@
 	function toggleOnlyMine() {
 		onlyMine = !onlyMine;
 		// if toggling ON and not logged in we keep empty list (per request),
-		// but show a small hint in the UI
 	}
 </script>
 
@@ -113,7 +131,21 @@
 
 		{#if user}
 			<div class="user-block" aria-live="polite">
-				<div class="avatar" title={user.username}>{user.username?.slice(0, 1).toUpperCase()}</div>
+				<a href="/profile" class="avatar-link">
+					{#if profileUser?.profileImage}
+						<img
+							src={profileUser.profileImage}
+							alt="Profilbild"
+							class="avatar-img"
+							style="width:38px;height:38px;border-radius:999px;object-fit:cover;cursor:pointer"
+						/>
+					{:else}
+						<div class="avatar" title={user.username} style="cursor:pointer">
+							{user.username?.slice(0, 1).toUpperCase()}
+						</div>
+					{/if}
+				</a>
+
 				<div class="user-info">
 					<div class="user-name">{user.username}</div>
 					<div class="user-email">{user.email}</div>
