@@ -10,16 +10,20 @@ generator client {
 model User {
   id        String   @id @default(uuid())
   username  String   @unique
-  password  String
   email     String?  @unique
   createdAt DateTime @default(now())
 
-  // relations
-  characters Character[] // Characters owned by this user
-  sessions   Session[] // Active sessions for the user
+  characters Character[]
+  sessions   Session[]
 
-  profileImage String? // data:url base64 e.g. "data:image/png;base64,...."
+  profileImage String?
   images       ProfileImage[]
+
+  password        String?
+  passwordHash    String?
+  passwordSalt    String?
+  passwordAlgo    String?
+  passwordVersion Int?     @default(1)
 }
 
 model ProfileImage {
