@@ -5,7 +5,6 @@ import { randomUUID } from 'crypto';
 import type { RequestHandler } from './$types';
 import { hashPassword } from '$lib/auth';
 
-// Password strength validator
 function validatePasswordStrength(password: string): string[] {
 	const errors: string[] = [];
 	if (password.length < 8) errors.push('Lösenordet måste vara minst 8 tecken');
@@ -25,20 +24,17 @@ export const POST: RequestHandler = async ({ request }) => {
 	const emailRaw = String(data.get('email') ?? '').trim();
 	const email = emailRaw === '' ? null : emailRaw.toLowerCase();
 
-	// optional image file
 	const file = data.get('image') as unknown as Blob | null;
 
 	if (!username || !password) {
 		return json({ error: 'username and password required' }, { status: 400 });
 	}
 
-	// Validate password strength
 	const pwErrors = validatePasswordStrength(password);
 	if (pwErrors.length > 0) {
 		return json({ error: pwErrors.join('. ') }, { status: 400 });
 	}
 
-	// validate image if present
 	let profileImage: string | null = null;
 	if (file && (file as any).size) {
 		const size = Number((file as any).size || 0);
@@ -64,7 +60,6 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	try {
-		// Hash password here (after validation)
 		const { salt, hash, algo } = hashPassword(password);
 
 		const user = await prisma.user.create({
@@ -78,7 +73,6 @@ export const POST: RequestHandler = async ({ request }) => {
 			}
 		});
 
-		// create session
 		const sessionId = randomUUID();
 		await prisma.session.create({
 			data: {
@@ -87,7 +81,6 @@ export const POST: RequestHandler = async ({ request }) => {
 			}
 		});
 
-		// return user + sessionId to client
 		return json({ user: { id: user.id, username: user.username, email: user.email }, sessionId });
 	} catch (err: unknown) {
 		console.error('Register error:', err);

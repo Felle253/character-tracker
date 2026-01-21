@@ -1,224 +1,258 @@
 <script lang="ts">
-	export let data;
+    export let data;
 
-	function computeStreak(games) {
-		let i = 0;
-		if (!games || games.length === 0) return { type: null, length: 0 };
-		const firstIsWin = games[0].result === 'WIN';
-		for (const g of games) {
-			if ((g.result === 'WIN') === firstIsWin) i++;
-			else break;
-		}
-		return { type: firstIsWin ? 'win' : 'loss', length: i };
-	}
-	const streak = computeStreak(data.character.games);
+    function computeStreak(games) {
+        let i = 0;
+        if (!games || games.length === 0) return { type: null, length: 0 };
+        const firstIsWin = games[0].result === 'WIN';
+        for (const g of games) {
+            if ((g.result === 'WIN') === firstIsWin) i++;
+            else break;
+        }
+        return { type: firstIsWin ? 'win' : 'loss', length: i };
+    }
+    const streak = computeStreak(data.character.games);
 </script>
 
-<section class="detail">
-	<header class="detail-top">
-		<div>
-			<h1>{data.character.name}</h1>
-			{#if data.character.description}<p class="desc">{data.character.description}</p>{/if}
-			<div class="meta">
-				<span>Matches: {data.total}</span>
-				<span>Wins: {data.wins}</span>
-				<span>Losses: {data.losses}</span>
-				<span>Draws: {data.draws}</span>
-				<span>Win rate: <strong>{data.winRate}%</strong></span>
-				{#if streak.type}
-					<span class="streak"
-						>Streak: {streak.length} {streak.type === 'win' ? 'wins' : 'losses'}</span
-					>
-				{/if}
-			</div>
-		</div>
+<div class="detail-container">
+    <header class="detail-header">
+        <div class="title-group">
+            <a href="/characters" class="back-link">← Galleri</a>
+            <h1>{data.character.name}</h1>
+            {#if data.character.description}
+                <p class="description">{data.character.description}</p>
+            {/if}
+        </div>
+        <div class="header-actions">
+            <a href="/characters/create" class="btn secondary">Skapa ny</a>
+        </div>
+    </header>
 
-		<div class="actions">
-			<a href="/characters" class="btn">Tillbaka</a>
-			<a href="/characters/create" class="btn">Skapa ny</a>
-		</div>
-	</header>
+    <section class="stats-grid">
+        <div class="stat-card main">
+            <span class="label">Win Rate</span>
+            <span class="value highlight">{data.winRate}%</span>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {data.winRate}%"></div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <span class="label">Matcher</span>
+            <span class="value">{data.total}</span>
+        </div>
+        <div class="stat-card">
+            <span class="label">Vinster</span>
+            <span class="value win">{data.wins}</span>
+        </div>
+        <div class="stat-card">
+            <span class="label">Streak</span>
+            {#if streak.type}
+                <span class="value streak-{streak.type}">{streak.length} {streak.type === 'win' ? 'W' : 'L'}</span>
+            {:else}
+                <span class="value">-</span>
+            {/if}
+        </div>
+    </section>
 
-	<section class="log-match">
-		<h2>Simulera match (50/50 win / loss)</h2>
+    <div class="content-split">
+        <section class="log-section glass-panel">
+            <h2>Logga Match</h2>
+            <p class="subtitle">Simulera en 50/50 match mot en motståndare.</p>
 
-		<!-- form posts to server which randomises result server-side -->
-		<form method="POST" action="?/logMatch" class="log-form">
-			<input type="hidden" name="characterId" value={data.character.id} />
+            <form method="POST" action="?/logMatch" class="cyber-form">
+                <input type="hidden" name="characterId" value={data.character.id} />
 
-			<div class="field">
-				<label>Motståndare</label>
-				<select name="opponentId">
-					<option value="">Ingen motståndare (spara endast för denna character)</option>
-					{#each data.otherCharacters as oc}
-						<option value={oc.id}>{oc.name}</option>
-					{/each}
-				</select>
-			</div>
+                <div class="field">
+                    <label for="opp">Motståndare</label>
+                    <select id="opp" name="opponentId">
+                        <option value="">Solo (Ingen motståndare)</option>
+                        {#each data.otherCharacters as oc}
+                            <option value={oc.id}>{oc.name}</option>
+                        {/each}
+                    </select>
+                </div>
 
-			<div class="field">
-				<label>Kommentar (valfritt)</label>
-				<input name="comment" placeholder="tough game, felt lucky..." />
-			</div>
+                <div class="form-row">
+                    <div class="field">
+                        <label for="dur">Tid (sek)</label>
+                        <input id="dur" name="durationSeconds" type="number" placeholder="120" />
+                    </div>
+                    <div class="field">
+                        <label for="comm">Kommentar</label>
+                        <input id="comm" name="comment" placeholder="Kändes bra..." />
+                    </div>
+                </div>
 
-			<div class="field">
-				<label>Speltid (valfritt)</label>
-				<input name="durationSeconds" type="number" min="0" placeholder="120" />
-			</div>
+                <button type="submit" class="btn primary full-width">Starta Simulering</button>
+            </form>
+        </section>
 
-			<div class="actions">
-				<button type="submit" class="btn primary">Spela match (simulera 50/50)</button>
-			</div>
-		</form>
-	</section>
+        <section class="history-section">
+            <h2>Matchhistorik</h2>
+            <div class="history-list">
+                {#each data.character.games as g}
+                    <div class="game-item {g.result.toLowerCase()}">
+                        <div class="status-indicator"></div>
+                        <div class="game-info">
+                            <div class="game-main">
+                                <span class="result-text">{g.result}</span>
+                                {#if g.opponentName}
+                                    <span class="vs">vs {g.opponentName}</span>
+                                {/if}
+                            </div>
+                            <div class="game-meta">
+                                <span>{new Date(g.createdAt).toLocaleDateString()}</span>
+                                {#if g.durationSeconds}<span>• {g.durationSeconds}s</span>{/if}
+                            </div>
+                            {#if g.comment}
+                                <p class="game-comment">"{g.comment}"</p>
+                            {/if}
+                        </div>
+                    </div>
+                {/each}
 
-	<section class="history">
-		<h2>Match-historik</h2>
-		<ul>
-			{#each data.character.games as g}
-				<li class={`game ${g.result === 'WIN' ? 'win' : g.result === 'LOSS' ? 'loss' : 'draw'}`}>
-					<div class="left">
-						<div class="result">
-							{#if g.result === 'WIN'}
-								Win
-							{:else if g.result === 'LOSS'}
-								Loss
-							{:else}
-								Draw
-							{/if}
-						</div>
-						<div class="time">{new Date(g.createdAt).toLocaleString()}</div>
-						{#if g.opponentName}<div class="opp">vs {g.opponentName}</div>{/if}
-						{#if g.durationSeconds}<div class="dur">{g.durationSeconds}s</div>{/if}
-						{#if g.comment}<div class="comment">"{g.comment}"</div>{/if}
-					</div>
-				</li>
-			{/each}
-			{#if data.character.games.length === 0}
-				<li class="empty">Inga matcher ännu.</li>
-			{/if}
-		</ul>
-	</section>
-</section>
+                {#if data.character.games.length === 0}
+                    <div class="empty-state">Inga spelade matcher än.</div>
+                {/if}
+            </div>
+        </section>
+    </div>
+</div>
 
 <style>
-	.detail {
-		max-width: 64rem;
-		margin: 2rem auto;
-		padding: 1.25rem;
-		background: #0f172a;
-		color: #f8fafc;
-		border-radius: 0.75rem;
-		border: 1px solid #22303f;
-	}
-	.detail-top {
-		display: flex;
-		justify-content: space-between;
-		gap: 1rem;
-		align-items: flex-start;
-		margin-bottom: 1.25rem;
-	}
-	h1 {
-		color: #60a5fa;
-		margin: 0 0 0.4rem 0;
-		font-size: 1.5rem;
-	}
-	.desc {
-		color: #94a3b8;
-		margin: 0 0 0.5rem 0;
-	}
-	.meta {
-		display: flex;
-		gap: 0.75rem;
-		color: #cbd5e1;
-		flex-wrap: wrap;
-		margin-top: 0.5rem;
-	}
-	.streak {
-		color: #facc15;
-		font-weight: 700;
-	}
+    .detail-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 1rem 5rem;
+    }
 
-	.actions .btn {
-		margin-left: 0.5rem;
-		text-decoration: none;
-		padding: 0.4rem 0.6rem;
-		border-radius: 0.4rem;
-		background: #071027;
-		color: #f8fafc;
-		border: 1px solid #334155;
-	}
+    /* Header */
+    .detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 2.5rem;
+    }
 
-	.log-match {
-		margin-top: 0.75rem;
-		margin-bottom: 1rem;
-	}
-	.log-form {
-		display: grid;
-		gap: 0.75rem;
-		grid-template-columns: 1fr;
-	}
-	.field label {
-		display: block;
-		color: #cbd5e1;
-		margin-bottom: 0.25rem;
-	}
-	.field input,
-	.field select {
-		padding: 0.6rem;
-		border-radius: 0.4rem;
-		background: #071027;
-		border: 1px solid #22303f;
-		color: #f8fafc;
-	}
+    .back-link {
+        color: #3b82f6;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
 
-	.btn.primary {
-		background: #2563eb;
-		color: white;
-		padding: 0.5rem 0.75rem;
-		border-radius: 0.4rem;
-	}
+    h1 { font-size: 2.5rem; font-weight: 900; margin: 0; color: white; }
+    .description { color: #94a3b8; margin: 0.5rem 0 0; font-size: 1.1rem; }
 
-	.history ul {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-	.game {
-		display: flex;
-		align-items: center;
-		padding: 0.75rem;
-		border-radius: 0.5rem;
-		margin-bottom: 0.5rem;
-		border: 1px solid #22303f;
-		background: #071027;
-	}
-	.game.win {
-		border-left: 4px solid #22c55e;
-	}
-	.game.loss {
-		border-left: 4px solid #ef4444;
-	}
-	.game.draw {
-		border-left: 4px solid #facc15;
-	}
-	.game .left .result {
-		font-weight: 700;
-		color: #f8fafc;
-	}
-	.game .left .time {
-		font-size: 0.85rem;
-		color: #94a3b8;
-	}
-	.game .opp,
-	.game .dur,
-	.game .comment {
-		font-size: 0.9rem;
-		color: #cbd5e1;
-		margin-top: 0.25rem;
-	}
-	.empty {
-		color: #94a3b8;
-		padding: 0.75rem;
-	}
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: rgba(30, 41, 59, 0.5);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stat-card.main { background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.2); }
+    .stat-card .label { font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 700; letter-spacing: 1px; }
+    .stat-card .value { font-size: 1.8rem; font-weight: 800; margin-top: 0.25rem; }
+    
+    .value.highlight { color: #60a5fa; }
+    .value.win { color: #10b981; }
+    .streak-win { color: #facc15; }
+    .streak-loss { color: #ef4444; }
+
+    .progress-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 1rem; overflow: hidden; }
+    .progress-fill { height: 100%; background: #3b82f6; border-radius: 2px; }
+
+    /* Layout Split */
+    .content-split {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 2.5rem;
+        align-items: start;
+    }
+
+    .glass-panel {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(12px);
+        padding: 2rem;
+        border-radius: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    h2 { font-size: 1.5rem; margin: 0 0 0.5rem 0; color: white; }
+    .subtitle { color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+    /* Form */
+    .cyber-form { display: flex; flex-direction: column; gap: 1.25rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    
+    .field label { display: block; font-size: 0.75rem; font-weight: 700; color: #94a3b8; margin-bottom: 0.5rem; text-transform: uppercase; }
+    
+    input, select {
+        width: 100%;
+        padding: 0.75rem;
+        background: #071027;
+        border: 1px solid #1e293b;
+        border-radius: 0.5rem;
+        color: white;
+        box-sizing: border-box;
+    }
+
+    /* Historik-lista */
+    .history-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .game-item {
+        background: rgba(30, 41, 59, 0.3);
+        border: 1px solid rgba(255,255,255,0.03);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        transition: transform 0.2s;
+    }
+
+    .game-item:hover { transform: translateX(5px); background: rgba(30, 41, 59, 0.5); }
+
+    .status-indicator { width: 4px; height: 40px; border-radius: 2px; flex-shrink: 0; }
+    .game-item.win .status-indicator { background: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
+    .game-item.loss .status-indicator { background: #ef4444; }
+    .game-item.draw .status-indicator { background: #facc15; }
+
+    .game-main { display: flex; gap: 0.75rem; align-items: center; }
+    .result-text { font-weight: 800; font-size: 1rem; text-transform: uppercase; }
+    .vs { color: #94a3b8; font-size: 0.9rem; }
+    .game-meta { font-size: 0.8rem; color: #64748b; margin-top: 0.25rem; }
+    .game-comment { font-style: italic; font-size: 0.85rem; color: #cbd5e1; margin: 0.5rem 0 0 0; }
+
+    /* Knappar */
+    .btn {
+        padding: 0.75rem 1.25rem;
+        border-radius: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        border: none;
+    }
+    .btn.primary { background: #3b82f6; color: white; }
+    .btn.secondary { background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); }
+    .full-width { width: 100%; }
+
+    @media (max-width: 850px) {
+        .content-split { grid-template-columns: 1fr; }
+        .detail-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    }
 </style>

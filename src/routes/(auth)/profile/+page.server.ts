@@ -5,7 +5,6 @@ import { fail, redirect } from '@sveltejs/kit';
 import { Buffer } from 'buffer';
 
 export const load: PageServerLoad = async () => {
-	// No server-side data required; client fetches via /api/user/:id
 	return {};
 };
 
@@ -40,16 +39,13 @@ export const actions: Actions = {
 			const buffer = Buffer.from(arrayBuffer);
 			const dataUrl = `data:${type};base64,${buffer.toString('base64')}`;
 
-			// ensure user exists
 			const user = await prisma.user.findUnique({ where: { id: userId } });
 			if (!user) return fail(404, { error: 'User not found' });
 
-			// update current profile image and create history entry
 			await prisma.user.update({ where: { id: userId }, data: { profileImage: dataUrl } });
 
 			await prisma.profileImage.create({ data: { userId, imageUrl: dataUrl } });
 
-			// redirect back so client will fetch fresh gallery
 			throw redirect(303, '/profile');
 		} catch (err) {
 			console.error('Profile upload error:', err);
@@ -66,7 +62,6 @@ export const actions: Actions = {
 			const img = await prisma.profileImage.findUnique({ where: { id: imageId } });
 			if (!img) return fail(404, { error: 'Image not found' });
 
-			// if image was current profile, clear it
 			const user = await prisma.user.findUnique({ where: { id: img.userId } });
 			if (user && user.profileImage === img.imageUrl) {
 				await prisma.user.update({ where: { id: user.id }, data: { profileImage: null } });

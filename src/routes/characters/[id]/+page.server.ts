@@ -12,19 +12,17 @@ export const load: PageServerLoad = (async ({ params }) => {
 
     if (!character) throw error(404, 'Character not found');
 
-    // Hämta andra characters
     const otherCharacters = await prisma.character.findMany({
       where: { id: { not: id } },
       select: { id: true, name: true },
       orderBy: { name: 'asc' }
     });
 
-    // compute stats
     const total = character.games.length;
     const wins = character.games.filter((g) => g.result === 'WIN').length;
     const losses = character.games.filter((g) => g.result === 'LOSS').length;
     const draws = character.games.filter((g) => g.result === 'DRAW').length;
-    const winRate = total === 0 ? 0 : Math.round((wins / total) * 1000) / 10; // single decimal
+    const winRate = total === 0 ? 0 : Math.round((wins / total) * 1000) / 10;
 
     return { character, total, wins, losses, draws, winRate, otherCharacters };
   } catch (err) {
@@ -40,19 +38,16 @@ export const actions: Actions = {
 
     if (!id) return fail(400, { error: 'Missing character id' });
 
-    // optional fields from form
     const opponentId = (data.get('opponentId') ?? '').toString().trim() || null;
     const comment = (data.get('comment') ?? '').toString().trim() || null;
     const durationRaw = (data.get('durationSeconds') ?? '').toString().trim();
     const durationSeconds = durationRaw ? parseInt(durationRaw, 10) : null;
 
-    // Server-side 50/50 result selection (random)
     const isWin = Math.random() < 0.5;
     const playerResult = isWin ? 'WIN' : 'LOSS';
     const opponentResult = isWin ? 'LOSS' : 'WIN';
 
     try {
-      // load player and optional opponent
       const [player, opponent] = await Promise.all([
         prisma.character.findUnique({ where: { id } }),
         opponentId ? prisma.character.findUnique({ where: { id: opponentId } }) : Promise.resolve(null)
@@ -68,9 +63,7 @@ export const actions: Actions = {
         return fail(400, { error: 'Du kan inte välja samma character som motståndare.' });
       }
 
-      // Create games: one for player, and if opponent chosen, one for opponent with inverted result.
       if (opponent) {
-        // Use transaction to keep them in sync
         await prisma.$transaction([
           prisma.game.create({
             data: {
@@ -92,7 +85,6 @@ export const actions: Actions = {
           })
         ]);
       } else {
-        // No opponent chosen: create single game for the player (opponentName null)
         await prisma.game.create({
           data: {
             result: playerResult,

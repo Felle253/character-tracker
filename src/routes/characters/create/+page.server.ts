@@ -13,7 +13,6 @@ export const actions: Actions = {
     if (!sessionId) return fail(401, { error: 'Not authenticated' });
     if (!name) return fail(400, { error: 'Name required' });
 
-    // validate session
     const session = await prisma.session.findUnique({ where: { sessionId }, include: { user: true } });
     if (!session) return fail(401, { error: 'Invalid session' });
 
@@ -22,7 +21,7 @@ export const actions: Actions = {
         data: {
           name,
           description: description || null,
-          owner: { connect: { id: session.user.id } } // set owner from session
+          owner: { connect: { id: session.user.id } }
         }
       });
 

@@ -23,6 +23,5 @@ export const GET: RequestHandler = async ({ params }) => {
 
 	if (!user) return json({ error: 'Not found' }, { status: 404 });
 
-	// return user and images
 	return json({ user: { id: user.id, username: user.username, email: user.email, profileImage: user.profileImage }, images: user.images });
 };

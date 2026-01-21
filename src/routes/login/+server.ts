@@ -19,19 +19,17 @@ export const POST: RequestHandler = async ({ request }) => {
 		const user = await prisma.user.findUnique({ where: { username } });
 
 		if (!user) {
-			// Protect timing by doing a dummy KDF
+			// Protect timing by doing a dummy
 			dummyHash();
 			return json({ error: 'Invalid credentials' }, { status: 401 });
 		}
 
-		// If user has migrated passwordHash/salt
 		if (user.passwordHash && user.passwordSalt) {
 			const ok = validatePassword(password, user.passwordSalt, user.passwordHash);
 			if (!ok) {
 				return json({ error: 'Invalid credentials' }, { status: 401 });
 			}
 		} else if (user.password) {
-			// Legacy: cleartext password stored — compare safely and migrate on success
 			const stored = Buffer.from(user.password, 'utf8');
 			const input = Buffer.from(password, 'utf8');
 			let legacyMatch = false;
@@ -42,19 +40,16 @@ export const POST: RequestHandler = async ({ request }) => {
 				return json({ error: 'Invalid credentials' }, { status: 401 });
 			}
 
-			// Migrate to hashed password
 			const { salt, hash, algo } = hashPassword(password);
 			await prisma.user.update({
 				where: { id: user.id },
 				data: { passwordHash: hash, passwordSalt: salt, passwordAlgo: algo, password: null }
 			});
 		} else {
-			// No usable auth data
 			dummyHash();
 			return json({ error: 'Invalid credentials' }, { status: 401 });
 		}
 
-		// Authentication successful — create session
 		const sessionId = randomUUID();
 		await prisma.session.create({
 			data: {
