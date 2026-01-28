@@ -22,7 +22,7 @@ export const actions: Actions = {
 
 		try {
 			const allowed = ['image/jpeg', 'image/png', 'image/webp'];
-			const maxSize = 10 * 1024 * 1024; // 10MB
+			const maxSize = 10 * 1024 * 1024; // 10 står för MB
 
 			if (size === 0) return fail(400, { error: 'Tom fil' });
 			if (size > maxSize) return fail(400, { error: 'Filen är för stor (max 10MB).' });

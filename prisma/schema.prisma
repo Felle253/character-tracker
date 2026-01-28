@@ -24,23 +24,34 @@ model User {
   passwordSalt    String?
   passwordAlgo    String?
   passwordVersion Int?     @default(1)
+
+  /*sessionToken   String?   @unique
+  tokenCreatedAt DateTime?
+  lastActive     DateTime?*/
+
+  lastActive DateTime?
 }
 
 model ProfileImage {
   id        String   @id @default(cuid())
   user      User     @relation(fields: [userId], references: [id])
   userId    String
-  imageUrl  String // data URL eller filväg
+  imageUrl  String
   createdAt DateTime @default(now())
 }
 
 model Session {
-  id         String   @id @default(uuid())
-  sessionId  String   @unique
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String
-  lastActive DateTime @updatedAt
-  createdAt  DateTime @default(now())
+  id        String   @id @default(uuid())
+  token     String   @unique
+  createdAt DateTime @default(now())
+  lastUsed  DateTime @default(now())
+  expiresAt DateTime
+  userAgent String?
+  ipAddress String?
+  deviceName String?
+  
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 }
 
 model Character {

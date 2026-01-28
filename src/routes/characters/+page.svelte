@@ -193,7 +193,6 @@
 </main>
 
 <style>
-    /* Bakgrund och Layout */
     :global(body) {
         background: #020617;
         color: #f8fafc;
@@ -206,7 +205,6 @@
         padding: 2rem 1rem 6rem;
     }
 
-    /* Header & Nav */
     .site-header {
         background: rgba(15, 23, 42, 0.7);
         backdrop-filter: blur(15px);
@@ -241,7 +239,6 @@
         gap: 1.5rem;
     }
 
-    /* Knappar i Nav */
     .btn-create {
         background: linear-gradient(135deg, #3b82f6 0%, #7c3aed 100%);
         color: white;
@@ -280,7 +277,6 @@
         font-size: 0.8rem;
     }
 
-    /* User Pill */
     .user-pill {
         display: flex;
         align-items: center;
@@ -313,7 +309,6 @@
         padding: 0; cursor: pointer; text-align: left;
     }
 
-    /* Hero */
     .welcome-banner { margin-bottom: 2.5rem; }
     .welcome-banner h2 { font-size: 2.2rem; margin: 0; }
     .gradient-text {
@@ -323,7 +318,6 @@
     }
     .welcome-banner p { color: #94a3b8; font-size: 1.1rem; }
 
-    /* Karaktärskort */
     .character-grid {
         list-style: none;
         padding: 0;
@@ -406,7 +400,6 @@
     .view-more { color: #3b82f6; font-weight: 600; opacity: 0; transition: opacity 0.2s; }
     .character-card:hover .view-more { opacity: 1; }
 
-    /* Empty State */
     .empty-state {
         grid-column: 1 / -1;
         text-align: center;

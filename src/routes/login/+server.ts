@@ -1,12 +1,13 @@
 // src/routes/login/+server.ts
 import { json } from '@sveltejs/kit';
 import { prisma } from '$lib';
-import { randomUUID } from 'crypto';
 import type { RequestHandler } from './$types';
 import * as crypto from 'node:crypto';
-import { validatePassword, hashPassword, dummyHash } from '$lib/auth';
+import { validatePassword, hashPassword, dummyHash, generateSessionToken } from '$lib/auth';
+//import type { Actions } from './$types';
+//import { redirect } from '@sveltejs/kit';
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request , cookies }) => {
 	const data = await request.formData();
 	const username = String(data.get('username') ?? '').trim();
 	const password = String(data.get('password') ?? '').trim();
@@ -50,15 +51,37 @@ export const POST: RequestHandler = async ({ request }) => {
 			return json({ error: 'Invalid credentials' }, { status: 401 });
 		}
 
-		const sessionId = randomUUID();
+		const sessionToken = generateSessionToken();
+		const expiresAt = new Date();
+		expiresAt.setDate(expiresAt.getDate() + 14); // 14 = 14 dagar
+
 		await prisma.session.create({
 			data: {
-				sessionId,
-				user: { connect: { id: user.id } }
+				token: sessionToken,
+				userId: user.id,
+				expiresAt
 			}
 		});
 
-		return json({ user: { id: user.id, username: user.username, email: user.email }, sessionId });
+		await prisma.user.update({
+			where: { id: user.id },
+			data: { lastActive: new Date() }
+		});
+
+		cookies.set('sessionToken', sessionToken, {
+			path: '/',
+			maxAge: 60 * 60 * 24 * 14, // 14 = 14 dagar
+			secure: false,
+			httpOnly: true
+		});
+		//throw redirect(307, '/');
+		return json(
+			{
+				user: { id: user.id, username: user.username, email: user.email ?? null },
+				sessionId: sessionToken
+			},
+			{ status: 200 }
+		);
 	} catch (err) {
 		console.error('Login error:', err);
 		return json({ error: 'Login failed' }, { status: 500 });

@@ -191,7 +191,6 @@
     .link-highlight { color: #3b82f6; text-decoration: none; font-weight: 600; transition: color 0.2s; }
     .link-highlight:hover { color: #60a5fa; text-decoration: underline; }
 
-    /* Enkel Loader */
     .loader {
         width: 20px;
         height: 20px;

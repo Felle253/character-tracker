@@ -1,9 +1,9 @@
 // src/routes/register/+server.ts
-import { json } from '@sveltejs/kit';
+import { json, redirect } from '@sveltejs/kit';
 import { prisma } from '$lib';
 import { randomUUID } from 'crypto';
 import type { RequestHandler } from './$types';
-import { hashPassword } from '$lib/auth';
+import { hashPassword , createSession} from '$lib/auth';
 
 function validatePasswordStrength(password: string): string[] {
 	const errors: string[] = [];
@@ -17,7 +17,7 @@ function validatePasswordStrength(password: string): string[] {
 	return errors;
 }
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, cookies }) => {
 	const data = await request.formData();
 	const username = String(data.get('username') ?? '').trim();
 	const password = String(data.get('password') ?? '').trim();
@@ -73,15 +73,23 @@ export const POST: RequestHandler = async ({ request }) => {
 			}
 		});
 
-		const sessionId = randomUUID();
-		await prisma.session.create({
-			data: {
-				sessionId,
-				user: { connect: { id: user.id } }
-			}
+		const session = await createSession(user.id);
+
+		cookies.set('sessionToken', session.token, {
+			path: '/',
+			maxAge: 60 * 60 * 24 * 7, // 7 dagar
+			secure: false,
+			httpOnly: true
 		});
 
-		return json({ user: { id: user.id, username: user.username, email: user.email }, sessionId });
+		return json(
+			{
+				user: { id: user.id, username: user.username, email: user.email ?? null },
+				sessionId: session.token
+			},
+			{ status: 200 }
+		);
+		//throw redirect(307, '/');
 	} catch (err: unknown) {
 		console.error('Register error:', err);
 		return json(

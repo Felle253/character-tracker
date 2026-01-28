@@ -146,7 +146,6 @@
     h1 { font-size: 2.5rem; font-weight: 900; margin: 0; color: white; }
     .description { color: #94a3b8; margin: 0.5rem 0 0; font-size: 1.1rem; }
 
-    /* Stats Grid */
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -175,7 +174,6 @@
     .progress-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 1rem; overflow: hidden; }
     .progress-fill { height: 100%; background: #3b82f6; border-radius: 2px; }
 
-    /* Layout Split */
     .content-split {
         display: grid;
         grid-template-columns: 350px 1fr;
@@ -194,7 +192,6 @@
     h2 { font-size: 1.5rem; margin: 0 0 0.5rem 0; color: white; }
     .subtitle { color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem; }
 
-    /* Form */
     .cyber-form { display: flex; flex-direction: column; gap: 1.25rem; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     
@@ -210,7 +207,6 @@
         box-sizing: border-box;
     }
 
-    /* Historik-lista */
     .history-list { display: flex; flex-direction: column; gap: 0.75rem; }
 
     .game-item {
@@ -237,7 +233,6 @@
     .game-meta { font-size: 0.8rem; color: #64748b; margin-top: 0.25rem; }
     .game-comment { font-style: italic; font-size: 0.85rem; color: #cbd5e1; margin: 0.5rem 0 0 0; }
 
-    /* Knappar */
     .btn {
         padding: 0.75rem 1.25rem;
         border-radius: 0.75rem;

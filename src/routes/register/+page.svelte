@@ -124,7 +124,6 @@
     .accent { color: #3b82f6; }
     .auth-header p { color: #64748b; font-size: 0.95rem; margin-top: 0.5rem; }
 
-    /* Avatar Upload Styling */
     .avatar-upload {
         display: flex;
         justify-content: center;
@@ -173,7 +172,6 @@
     .upload-badge:hover { transform: scale(1.1); background: #2563eb; }
     .hidden-input { display: none; }
 
-    /* Form Fields */
     .auth-form { display: flex; flex-direction: column; gap: 1.25rem; }
     .field { display: flex; flex-direction: column; gap: 0.5rem; }
     
@@ -193,7 +191,6 @@
 
     input:focus { outline: none; border-color: #3b82f6; background: rgba(7, 16, 39, 0.9); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
 
-    /* Actions */
     .actions { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; }
 
     .btn-primary {

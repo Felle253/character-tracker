@@ -15,7 +15,7 @@ export const load = (async () => {
 			const total = c.games.length;
 			const wins = c.games.filter((g) => g.result === 'WIN').length;
 			const losses = total - wins;
-			const winRate = total === 0 ? 0 : Math.round((wins / total) * 1000) / 10; // 1 decimal
+			const winRate = total === 0 ? 0 : Math.round((wins / total) * 1000) / 10;
 			return {
 				id: c.id,
 				name: c.name,

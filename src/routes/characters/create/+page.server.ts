@@ -2,6 +2,7 @@
 import type { Actions } from './$types';
 import { prisma } from '$lib';
 import { fail, redirect } from '@sveltejs/kit';
+import { validateSession } from '$lib/auth';
 
 export const actions: Actions = {
   default: async ({ request }) => {
@@ -13,8 +14,8 @@ export const actions: Actions = {
     if (!sessionId) return fail(401, { error: 'Not authenticated' });
     if (!name) return fail(400, { error: 'Name required' });
 
-    const session = await prisma.session.findUnique({ where: { sessionId }, include: { user: true } });
-    if (!session) return fail(401, { error: 'Invalid session' });
+    const session = await validateSession(sessionId);
+    if (!session || !session.user) return fail(401, { error: 'Invalid session' });
 
     try {
       await prisma.character.create({

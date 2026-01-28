@@ -141,7 +141,6 @@
 </div>
 
 <style>
-    /* Global känsla */
     :global(body) {
         background: #020617;
         background-image: 
@@ -162,7 +161,6 @@
         max-width: 900px;
     }
 
-    /* Header */
     .profile-header {
         display: flex;
         align-items: center;
@@ -188,7 +186,6 @@
 
     .back-link:hover { color: #3b82f6; }
 
-    /* Layout-grid */
     .profile-content {
         display: grid;
         grid-template-columns: 300px 1fr;
@@ -285,7 +282,6 @@
     .preview-container { margin: 1rem 0; text-align: center; }
     .preview-img { max-height: 150px; border-radius: 0.75rem; border: 2px solid #3b82f6; }
 
-    /* Knappar */
     .btn {
         padding: 0.75rem 1.5rem;
         border-radius: 0.75rem;
@@ -306,7 +302,6 @@
     .btn.primary:hover { filter: brightness(1.1); }
     .full-width { width: 100%; }
 
-    /* Galleri */
     .gallery-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -349,7 +344,6 @@
 
     .hint { font-size: 0.8rem; color: #64748b; margin-top: 1rem; text-align: center; }
 
-    /* Responsivitet */
     @media (max-width: 768px) {
         .profile-content { grid-template-columns: 1fr; }
         .user-sidebar { order: -1; }

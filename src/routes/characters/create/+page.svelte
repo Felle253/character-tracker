@@ -75,7 +75,6 @@
 </div>
 
 <style>
-    /* Wrapper för att centrera kortet vertikalt */
     .page-wrapper {
         min-height: calc(100vh - 200px);
         display: flex;
@@ -128,7 +127,6 @@
         line-height: 1.5;
     }
 
-    /* Formulär-styling */
     .cyber-form {
         display: flex;
         flex-direction: column;
@@ -181,7 +179,6 @@
         background: rgba(7, 16, 39, 1);
     }
 
-    /* En snygg linje som "laddas" när man fokuserar */
     .focus-border {
         position: absolute;
         bottom: 0;
@@ -198,7 +195,6 @@
         width: 80%;
     }
 
-    /* Knappar */
     .form-actions {
         display: flex;
         flex-direction: column;
@@ -259,7 +255,6 @@
 
     .link-cancel:hover { color: #f1f5f9; }
 
-    /* Responsivitet */
     @media (max-width: 480px) {
         .create-card {
             padding: 1.5rem;

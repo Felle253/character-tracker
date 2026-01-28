@@ -20,24 +20,21 @@
 </div>
 
 <style>
-    /* Grundinställningar för hela appen */
     .app-wrapper {
         display: flex;
         flex-direction: column;
         min-height: 100vh;
-        /* Ser till att footern hamnar längst ner om sidan är kort */
     }
 
     .content-area {
-        flex: 1; /* Tar upp allt tillgängligt utrymme */
+        flex: 1;
     }
 
-    /* Glassmorphism Footer */
     .glass-footer {
         width: 100%;
         padding: 1.5rem 0;
-        background: rgba(15, 23, 42, 0.8); /* Mörk transparent blå/grå */
-        backdrop-filter: blur(10px); /* Suddighetseffekt */
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         color: #94a3b8;
@@ -56,7 +53,7 @@
     }
 
     .brand-text {
-        color: #60a5fa; /* Blå accentfärg */
+        color: #60a5fa;
         font-weight: 700;
     }
 
@@ -66,11 +63,10 @@
         gap: 0.5rem;
     }
 
-    /* En liten detalj: en "pulserande" status-lampa */
     .status-indicator {
         width: 8px;
         height: 8px;
-        background-color: #10b981; /* Grön */
+        background-color: #10b981;
         border-radius: 50%;
         display: inline-block;
         box-shadow: 0 0 8px #10b981;
