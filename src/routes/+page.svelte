@@ -16,3 +16,5 @@
 		color: #3498db;
 	}
 </style>
+
+// POST https://character-tracker-12ir.onrender.com/profile?/upload 500 (Internal Server Error)

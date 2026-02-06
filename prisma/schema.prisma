@@ -23,13 +23,16 @@ model User {
   passwordHash    String?
   passwordSalt    String?
   passwordAlgo    String?
-  passwordVersion Int?     @default(1)
+  passwordVersion Int?    @default(1)
 
-  /*sessionToken   String?   @unique
-  tokenCreatedAt DateTime?
-  lastActive     DateTime?*/
+  /**
+   * sessionToken   String?   @unique
+   * tokenCreatedAt DateTime?
+   * lastActive     DateTime?
+   */
 
   lastActive DateTime?
+  messages   Message[]
 }
 
 model ProfileImage {
@@ -41,15 +44,15 @@ model ProfileImage {
 }
 
 model Session {
-  id        String   @id @default(uuid())
-  token     String   @unique
-  createdAt DateTime @default(now())
-  lastUsed  DateTime @default(now())
-  expiresAt DateTime
-  userAgent String?
-  ipAddress String?
+  id         String   @id @default(uuid())
+  token      String   @unique
+  createdAt  DateTime @default(now())
+  lastUsed   DateTime @default(now())
+  expiresAt  DateTime
+  userAgent  String?
+  ipAddress  String?
   deviceName String?
-  
+
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 }
@@ -82,4 +85,14 @@ enum Result {
   WIN
   LOSS
   DRAW
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  authorId String?
+  author   User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }

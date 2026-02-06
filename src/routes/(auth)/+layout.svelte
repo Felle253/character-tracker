@@ -8,15 +8,6 @@
     <main class="content-area">
         {@render children()}
     </main>
-
-    <footer class="glass-footer">
-        <div class="footer-content">
-            <p>© 2024 <span class="brand-text">My Application</span>. All rights reserved.</p>
-            <div class="footer-links">
-                <span class="status-indicator"></span> System Status: Online
-            </div>
-        </div>
-    </footer>
 </div>
 
 <style>
