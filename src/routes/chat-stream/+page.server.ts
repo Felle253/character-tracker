@@ -3,7 +3,8 @@
 import type { Actions, PageServerLoad } from './$types';
 import { prisma } from '$lib';
 import { fail } from '@sveltejs/kit';
-import { broadcastToAllClients } from './+server';
+//import { broadcastToAllClients } from './+server';
+import { broadcastToAllClients } from '$lib/chat-state';
 import { requireAuth, validateSession } from '$lib/auth';
 
 export const actions: Actions = {

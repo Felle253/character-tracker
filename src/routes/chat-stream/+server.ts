@@ -4,7 +4,8 @@ import { prisma } from '$lib';
 
 // Global array för att hålla aktiva streams
 // I en riktig app skulle du använda Redis eller liknande
-export const activeStreams: ReadableStreamDefaultController[] = [];
+//export const activeStreams: ReadableStreamDefaultController[] = [];
+import { activeStreams } from '$lib/chat-state';
 
 export const GET: RequestHandler = async ({ cookies }) => {
   // Din uppgift: Skapa en ReadableStream
@@ -58,7 +59,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
     }
   });
 };
-
+/*
 export function broadcastToAllClients(data: any) {
   const encoder = new TextEncoder();
   const formattedData = `data: ${JSON.stringify(data)}\n\n`;
@@ -104,7 +105,7 @@ export function broadcastToUser(userId: string, data: any) {
     }
   }
 }
-
+*/
 export const POST: RequestHandler = async ({ request, cookies }) => {
   // Require authenticated user
   const user = await requireAuth(cookies);

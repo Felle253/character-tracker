@@ -1,7 +1,7 @@
 // src/routes/register/+server.ts
 import { json, redirect } from '@sveltejs/kit';
 import { prisma } from '$lib';
-import { randomUUID } from 'crypto';
+//import { randomUUID } from 'crypto';
 import type { RequestHandler } from './$types';
 import { hashPassword , createSession} from '$lib/auth';
 

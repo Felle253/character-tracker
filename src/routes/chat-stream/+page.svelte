@@ -8,8 +8,8 @@
     let connectionStatus = 'connecting';
     let reconnectAttempts = 0;
     let maxReconnectAttempts = 5;
-  let newMessage = '';
-  let currentUserId = data?.currentUserId ?? null;
+	let newMessage = '';
+	let currentUserId = data?.currentUserId ?? null;
 
 	function setupEventSource() {
 		const eventSource = new EventSource('/chat-stream');
@@ -30,7 +30,7 @@
 				setTimeout(() => {
 					eventSource.close();
 					setupEventSource();
-				}, 1000 * reconnectAttempts); // Exponential backoff
+				}, 1000 * reconnectAttempts);
 			} else {
 				connectionStatus = 'failed';
 			}
@@ -114,7 +114,6 @@
 </script>
 
 <div class="chat-container">
-	<!-- Channel header -->
 	<div class="header">
 		<div class="connection-status" 
 			class:connecting={connectionStatus === 'connecting'}
@@ -136,7 +135,6 @@
 		</div>
 	</div>
 
-	<!-- Messages area -->
 	<div class="messages" role="log" aria-live="polite">
 		{#each messages as message}
 			<div class="message" 
@@ -160,7 +158,13 @@
 							{message.author?.username ?? message.owner?.username ?? message.user?.username ?? 'Unknown'}
 						</span>
 						<span class="timestamp">
-							{new Date(message.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+							{new Date(message.createdAt).toLocaleString([], {
+								hour: '2-digit',
+								minute: '2-digit',
+								year: '2-digit',
+								month: '2-digit',
+								day: '2-digit'
+							})}
 						</span>
 					</div>
 					<div class="text">{message.content}</div>
@@ -169,20 +173,19 @@
 		{/each}
 	</div>
 
-	<!-- Message input -->
 	<form class="input-form" method="POST" action="?/sendMessage">
 		<div class="input-wrapper">
 			<input 
 				name="message" 
 				type="text" 
 				bind:value={newMessage}
-				placeholder="Message #general-chat"
+				placeholder="Message..."
 				autocomplete="off"
 				class="input-field"
 			/>
 			<button type="submit" class="send-button">
 				<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-					<path d="M2 21L23 12L2 3V10L17 12L2 14V21Z" fill="currentColor"/>
+					<img src="https://cdn-icons-png.freepik.com/512/9195/9195557.png" alt="icon" width="24" height="24">
 				</svg>
 			</button>
 		</div>
@@ -218,7 +221,6 @@
 		font-family: "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	}
 
-	/* Header */
 	.header {
 		display: flex;
 		align-items: center;
@@ -230,7 +232,6 @@
 		box-shadow: 0 1px 0 rgba(4, 4, 5, 0.2), 0 1.5px 0 rgba(6, 6, 7, 0.05), 0 2px 0 rgba(4, 4, 5, 0.05);
 	}
 
-	/* Connection Status */
 	.connection-status {
 		display: flex;
 		align-items: center;
@@ -240,7 +241,6 @@
 		font-size: 12px;
 		font-weight: 500;
 	}
-
 	.status-dot {
 		width: 8px;
 		height: 8px;
@@ -265,7 +265,6 @@
 		color: var(--text-secondary);
 	}
 
-	/* Messages */
 	.messages {
 		flex: 1;
 		overflow-y: auto;
@@ -292,7 +291,6 @@
 		background-color: #18191c;
 	}
 
-	/* Message */
 	.message {
 		display: flex;
 		padding: 2px 16px 2px 72px;
@@ -370,7 +368,6 @@
 		white-space: pre-wrap;
 	}
 
-	/* Input Form */
 	.input-form {
 		padding: 0 16px 24px 16px;
 	}
@@ -416,15 +413,10 @@
 		background: rgba(255, 255, 255, 0.07);
 	}
 
-	/* Mobile Responsive */
 	@media (max-width: 768px) {
 		.header {
 			height: 44px;
 			padding: 0 12px;
-		}
-
-		.channel-name {
-			font-size: 15px;
 		}
 
 		.message {
